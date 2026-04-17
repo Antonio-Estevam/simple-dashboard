@@ -2,8 +2,9 @@
 import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet"
 import { Button } from "../ui/button"
 import Link from "next/link"
-import { Home, LogOut, Package, Package2, PanelBottom, Settings2, ShoppingBag, Users } from "lucide-react"
+import { BriefcaseBusiness, Home, Package, Package2, PanelBottom, Settings2, ShoppingBag, Users,  } from "lucide-react"
 import { TooltipProvider, Tooltip, TooltipContent,TooltipTrigger } from "@/components/ui/tooltip"
+import { LogoutButton } from "./logout-button"
 export function Sidebar(){
     return (
         <div className="flex w-full flex-col bg-muted/40">
@@ -11,26 +12,32 @@ export function Sidebar(){
                 className="fixed inset-y-0 left-0 z-10 hidden w-14 border-r bg-background sm:flex flex-col"
             >
                 <nav className="flex flex-col items-center gap-4 px-2 py-5">
-                    <TooltipProvider>
-                        <Link
-                            href="#"
-                            className="flex h-9 w-9 shrink-0 items-center justify-center bg-primary text-primary-foreground rounded-full"
-                        >
-                            <Package className="h-4 w-4"/>
-                            <span className="sr-only">Deshbord Avatar</span>
-                        </Link>
+                    <TooltipProvider>                     
 
                         <Tooltip>
                             <TooltipTrigger asChild>
                                 <Link
-                                    href="#"
-                                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground"
+                                    href="/dashboard"
+                                    className="flex h-9 w-9 shrink-0 items-center justify-center bg-primary text-primary-foreground rounded-full"
                                 >
                                  <Home className="h-5 w-5"/>
                                  <span className="sr-only">Início</span>
                                 </Link>
                             </TooltipTrigger>
                             <TooltipContent side="right">Início</TooltipContent>
+                        </Tooltip>
+
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Link
+                                    href="/dashboard/crm"
+                                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground"
+                                >
+                                 <BriefcaseBusiness className="h-5 w-5"/>
+                                 <span className="sr-only">CRM</span>
+                                </Link>
+                            </TooltipTrigger>
+                            <TooltipContent side="right">CRM</TooltipContent>
                         </Tooltip>
 
                         <Tooltip>
@@ -90,13 +97,7 @@ export function Sidebar(){
                     <TooltipProvider>
                         <Tooltip>
                             <TooltipTrigger asChild>
-                                <Link
-                                    href="#"
-                                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground"
-                                >
-                                 <LogOut className="h-5 w-5 text-red-500"/>
-                                 <span className="sr-only">Sair</span>
-                                </Link>
+                                <LogoutButton />
                             </TooltipTrigger>
                             <TooltipContent side="right">Sair</TooltipContent>
                         </Tooltip>

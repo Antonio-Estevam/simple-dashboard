@@ -3,7 +3,7 @@ import { Sales } from "@/components/sales";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { BadgeDollarSign, DollarSign, Percent, Users } from "lucide-react";
 
-export default function Home() {
+export default function Dashboard() {
   return (
     <main className="sm:ml-14 p-4">
       <section className="grid grid-cols-2 lg:grid-cols-4 gap-4 ">
