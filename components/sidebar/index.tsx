@@ -2,9 +2,10 @@
 import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet"
 import { Button } from "../ui/button"
 import Link from "next/link"
-import { BriefcaseBusiness, Home, Package, Package2, PanelBottom, Settings2, ShoppingBag, Users,  } from "lucide-react"
-import { TooltipProvider, Tooltip, TooltipContent,TooltipTrigger } from "@/components/ui/tooltip"
+import { Home, Package, Package2, PanelBottom, Settings2, ShoppingBag, Users } from "lucide-react"
+import { TooltipProvider, Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { LogoutButton } from "./logout-button"
+import { SidebarNavLinks } from "./nav-link"
 export function Sidebar(){
     return (
         <div className="flex w-full flex-col bg-muted/40">
@@ -12,86 +13,7 @@ export function Sidebar(){
                 className="fixed inset-y-0 left-0 z-10 hidden w-14 border-r bg-background sm:flex flex-col"
             >
                 <nav className="flex flex-col items-center gap-4 px-2 py-5">
-                    <TooltipProvider>                     
-
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <Link
-                                    href="/dashboard"
-                                    className="flex h-9 w-9 shrink-0 items-center justify-center bg-primary text-primary-foreground rounded-full"
-                                >
-                                 <Home className="h-5 w-5"/>
-                                 <span className="sr-only">Início</span>
-                                </Link>
-                            </TooltipTrigger>
-                            <TooltipContent side="right">Início</TooltipContent>
-                        </Tooltip>
-
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <Link
-                                    href="/dashboard/crm"
-                                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground"
-                                >
-                                 <BriefcaseBusiness className="h-5 w-5"/>
-                                 <span className="sr-only">CRM</span>
-                                </Link>
-                            </TooltipTrigger>
-                            <TooltipContent side="right">CRM</TooltipContent>
-                        </Tooltip>
-
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <Link
-                                    href="#"
-                                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground"
-                                >
-                                 <ShoppingBag className="h-5 w-5"/>
-                                 <span className="sr-only">Pedidos</span>
-                                </Link>
-                            </TooltipTrigger>
-                            <TooltipContent side="right">Pedidos</TooltipContent>
-                        </Tooltip>
-
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <Link
-                                    href="#"
-                                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground"
-                                >
-                                 <Package2 className="h-5 w-5"/>
-                                 <span className="sr-only">Produtos</span>
-                                </Link>
-                            </TooltipTrigger>
-                            <TooltipContent side="right">Produtos</TooltipContent>
-                        </Tooltip>
-
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <Link
-                                    href="#"
-                                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground"
-                                >
-                                 <Users className="h-5 w-5"/>
-                                 <span className="sr-only">Clientes</span>
-                                </Link>
-                            </TooltipTrigger>
-                            <TooltipContent side="right">Clientes</TooltipContent>
-                        </Tooltip>
-
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <Link
-                                    href="#"
-                                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground"
-                                >
-                                 <Settings2 className="h-5 w-5"/>
-                                 <span className="sr-only">Configurações</span>
-                                </Link>
-                            </TooltipTrigger>
-                            <TooltipContent side="right">Configurações</TooltipContent>
-                        </Tooltip>
-                    </TooltipProvider>
+                    <SidebarNavLinks />
                 </nav>
                 <nav className="mt-auto flex flex-col items-center gap-4 px-2 py-5">
                     <TooltipProvider>

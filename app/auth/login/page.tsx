@@ -48,9 +48,7 @@ export default function Login() {
             <h1 className="text-5xl font-bold text-gray-800">Coaching SO</h1>
           </header>  
 
-          <article className="w-full h-1/4 flex flex-col items-center justify-center px-6">
-            <p className="mb-2">aqui vai ficar o formulário de login, mas como ainda não tem o formulário de login, eu vou deixar esse espaço em branco por enquanto </p>    
-            <Input value={username} onChange={(e) => setUsername(e.target.value)} type="text" placeholder="Username" className="mb-4" />
+          <article className="w-full h-1/4 flex flex-col items-center justify-center px-6"><Input value={username} onChange={(e) => setUsername(e.target.value)} type="text" placeholder="Username" className="mb-4" />
             <Input value={password} onChange={(e) => setPassword(e.target.value)} type="password" placeholder="Password" className="mb-4" />
             {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
             <Button variant="default" type="submit" onClick={handleSubmit} className="w-full">
