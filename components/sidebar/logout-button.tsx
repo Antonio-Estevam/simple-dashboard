@@ -2,12 +2,9 @@
 
 import { useRouter } from "next/navigation";
 import { LogOut } from "lucide-react";
+import { SidebarMenuButton } from "@/components/ui/sidebar";
 
-interface LogoutButtonProps {
-  variant?: "icon" | "full";
-}
-
-export function LogoutButton({ variant = "icon" }: LogoutButtonProps) {
+export function LogoutButton() {
   const router = useRouter();
 
   async function handleLogout() {
@@ -15,25 +12,14 @@ export function LogoutButton({ variant = "icon" }: LogoutButtonProps) {
     router.push("/auth/login");
   }
 
-  if (variant === "full") {
-    return (
-      <button
-        onClick={handleLogout}
-        className="flex items-center gap-4 px-2.5 text-red-400 hover:text-red-500"
-      >
-        <LogOut className="h-5 w-5 transition-all" />
-        Sair
-      </button>
-    );
-  }
-
   return (
-    <button
+    <SidebarMenuButton
       onClick={handleLogout}
-      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground"
+      tooltip="Sair"
+      className="text-red-400 hover:text-red-500 hover:bg-transparent"
     >
-      <LogOut className="h-5 w-5 text-red-500" />
-      <span className="sr-only">Sair</span>
-    </button>
+      <LogOut />
+      <span>Sair</span>
+    </SidebarMenuButton>
   );
 }

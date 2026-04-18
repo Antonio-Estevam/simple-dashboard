@@ -1,114 +1,169 @@
+"use client";
 
-import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet"
-import { Button } from "../ui/button"
-import Link from "next/link"
-import { Home, Package, Package2, PanelBottom, Settings2, ShoppingBag, Users } from "lucide-react"
-import { TooltipProvider, Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
-import { LogoutButton } from "./logout-button"
-import { SidebarNavLinks } from "./nav-link"
-export function Sidebar(){
-    return (
-        <div className="flex w-full flex-col bg-muted/40">
-            <aside 
-                className="fixed inset-y-0 left-0 z-10 hidden w-14 border-r bg-background sm:flex flex-col"
-            >
-                <nav className="flex flex-col items-center gap-4 px-2 py-5">
-                    <SidebarNavLinks />
-                </nav>
-                <nav className="mt-auto flex flex-col items-center gap-4 px-2 py-5">
-                    <TooltipProvider>
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <LogoutButton />
-                            </TooltipTrigger>
-                            <TooltipContent side="right">Sair</TooltipContent>
-                        </Tooltip>
-                    </TooltipProvider>
-                </nav>
-            </aside>
-            <div className="sm:hidden flex w-full flex-col sm:gap-4 sm:py-4 sm:pl-14">
-                <header 
-                    className="sticky top-0 z-30 flex h-14 items-center px-4 border-b bg-background gap-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6"
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import {
+  BriefcaseBusiness,
+  ChevronDown,
+  Home,
+  Package2,
+  Settings2,
+  ShoppingBag,
+  Sparkles,
+  Users,
+} from "lucide-react";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
+  SidebarRail,
+} from "@/components/ui/sidebar";
+import { LogoutButton } from "./logout-button";
+
+const activeBtn =
+  "data-[active=true]:bg-transparent data-[active=true]:text-sidebar-primary [&[data-active=true]>svg]:text-sidebar-primary hover:bg-sidebar-accent";
+
+export function AppSidebar() {
+  const pathname = usePathname();
+  const isCrmOpen = pathname.startsWith("/dashboard/crm");
+
+  return (
+    <Sidebar collapsible="icon">
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarMenu>
+
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  isActive={pathname === "/dashboard"}
+                  tooltip="Início"
+                  className={activeBtn}
                 >
-                    <Sheet>
-                        <SheetTrigger asChild>
-                            <Button size="icon" variant="outline" className="sm:hidden">
-                                <PanelBottom className="w-5 h-5" />
-                                <span className="sr-only">Abrir / fechar menu</span>
-                            </Button>
-                        </SheetTrigger>
+                  <Link href="/dashboard">
+                    <Home />
+                    <span>Home</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
 
-                        <SheetContent side="left" className="sm:max-w-x">
-                            <nav className="grid gap-6 text-lg font-medium">
-                                <Link 
-                                    href="#"
-                                    className="flex h-10 w-10 bg-primary rounded-full text-lg items-center justify-center text-primary-foreground md:text-base gap-2"
-                                    prefetch={false}
-                                >
-                                    <Package className="h-5 w-5 transition-all"/>
-                                    <span className="sr-only">Logo</span>
-                                </Link>
+              <Collapsible defaultOpen={isCrmOpen} className="group/collapsible">
+                <SidebarMenuItem>
+                  <CollapsibleTrigger asChild>
+                    <SidebarMenuButton
+                      isActive={isCrmOpen}
+                      tooltip="CRM"
+                      className={activeBtn}
+                    >
+                      <BriefcaseBusiness />
+                      <span>CRM</span>
+                      <ChevronDown className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-180" />
+                    </SidebarMenuButton>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent>
+                    <SidebarMenuSub>
+                      <SidebarMenuSubItem>
+                        <SidebarMenuSubButton
+                          asChild
+                          isActive={pathname === "/dashboard/crm"}
+                        >
+                          <Link href="/dashboard/crm">Resumo</Link>
+                        </SidebarMenuSubButton>
+                      </SidebarMenuSubItem>
+                      <SidebarMenuSubItem>
+                        <SidebarMenuSubButton
+                          asChild
+                          isActive={pathname === "/dashboard/crm/clientes"}
+                        >
+                          <Link href="/dashboard/crm/clientes">Clientes</Link>
+                        </SidebarMenuSubButton>
+                      </SidebarMenuSubItem>
+                      <SidebarMenuSubItem>
+                        <SidebarMenuSubButton
+                          asChild
+                          isActive={pathname === "/dashboard/crm/leads"}
+                        >
+                          <Link href="/dashboard/crm/leads">Leads</Link>
+                        </SidebarMenuSubButton>
+                      </SidebarMenuSubItem>
+                    </SidebarMenuSub>
+                  </CollapsibleContent>
+                </SidebarMenuItem>
+              </Collapsible>
 
-                                <Link 
-                                    href="#"
-                                    className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-                                    prefetch={false}
-                                >
-                                    <Home className="h-5 w-5 transition-all"/>
-                                    Início
-                                </Link>
-                                
-                                <Link 
-                                    href="#"
-                                    className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-                                    prefetch={false}
-                                >
-                                    <ShoppingBag className="h-5 w-5 transition-all"/>
-                                    Pedidos
-                                </Link>
-                                
-                                <Link 
-                                    href="#"
-                                    className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-                                    prefetch={false}
-                                >
-                                    <Package2 className="h-5 w-5 transition-all"/>
-                                    Produtos
-                                </Link>
-                                
-                                <Link 
-                                    href="#"
-                                    className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-                                    prefetch={false}
-                                >
-                                    <Users className="h-5 w-5 transition-all"/>
-                                    Clientes
-                                </Link>
-                                
-                                <Link 
-                                    href="#"
-                                    className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-                                    prefetch={false}
-                                >
-                                    <Settings2 className="h-5 w-5 transition-all"/>
-                                    Configurações
-                                </Link>
-                            </nav>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild tooltip="Novidades" className={activeBtn}>
+                  <Link href="#">
+                    <Sparkles />
+                    <span>Novidades</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
 
-                            {/*<nav className="mt-auto flex flex-col items-center gap-4 px-2 py-5">
-                                            <Link
-                                                href="#"
-                                                className="flex items-center gap-4 px-2.5 text-red-400 hover:text-red-500"
-                                            >
-                                            <LogOut className="h-5 w-5 transition-all"/>
-                                                Sair
-                                            </Link>
-                            </nav>*/}
-                        </SheetContent>
-                    </Sheet>
-                    <h2>Menu</h2>
-                </header>
-            </div>
-        </div>
-    )
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild tooltip="Pedidos" className={activeBtn}>
+                  <Link href="#">
+                    <ShoppingBag />
+                    <span>Pedidos</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild tooltip="Produtos" className={activeBtn}>
+                  <Link href="#">
+                    <Package2 />
+                    <span>Produtos</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild tooltip="Clientes" className={activeBtn}>
+                  <Link href="#">
+                    <Users />
+                    <span>Clientes</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild tooltip="Configurações" className={activeBtn}>
+                  <Link href="#">
+                    <Settings2 />
+                    <span>Configurações</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
+
+      <SidebarFooter>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <LogoutButton />
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
+
+      <SidebarRail />
+    </Sidebar>
+  );
 }
