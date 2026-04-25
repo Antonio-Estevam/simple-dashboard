@@ -43,6 +43,7 @@ export function AppSidebar() {
   const isCrmActive = pathname.startsWith("/dashboard/crm");
   const [crmOpen, setCrmOpen] = useState(isCrmActive);
 
+
   const containerRef = useRef<HTMLDivElement>(null);
   const homeRef = useRef<HTMLButtonElement>(null);
   const crmRef = useRef<HTMLButtonElement>(null);
@@ -134,8 +135,13 @@ export function AppSidebar() {
                           </SidebarMenuSubButton>
                         </SidebarMenuSubItem>
                         <SidebarMenuSubItem>
-                          <SidebarMenuSubButton asChild isActive={pathname === "/dashboard/crm/clientsactive"}>
-                            <Link href="/dashboard/crm/clientsactive">Clientes Ativo</Link>
+                          <SidebarMenuSubButton asChild isActive={pathname === "/dashboard/crm/clients"}>
+                            <Link href="/dashboard/crm/clients">Clientes Ativos</Link>
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                        <SidebarMenuSubItem>
+                          <SidebarMenuSubButton asChild isActive={pathname === "/dashboard/crm/inactive-clients"}>
+                            <Link href="/dashboard/crm/inactive-clients">Clientes Inativos</Link>
                           </SidebarMenuSubButton>
                         </SidebarMenuSubItem>
                         <SidebarMenuSubItem>
