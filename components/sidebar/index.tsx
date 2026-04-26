@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import {
+  BicepsFlexed,
   BriefcaseBusiness,
   ChevronDown,
   Home,
@@ -41,17 +42,24 @@ export function AppSidebar() {
   const { open, setOpen } = useSidebar();
 
   const isCrmActive = pathname.startsWith("/dashboard/crm");
-  const [crmOpen, setCrmOpen] = useState(isCrmActive);
+  const isCoachingActive = pathname.startsWith("/dashboard/coaching");
 
+  const [crmOpen, setCrmOpen] = useState(isCrmActive);  
+  const [coachingOpen, setCoachingOpen] = useState(isCoachingActive);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const homeRef = useRef<HTMLButtonElement>(null);
   const crmRef = useRef<HTMLButtonElement>(null);
+  const coachingRef = useRef<HTMLButtonElement>(null);
   const [pill, setPill] = useState<{ y: number; h: number } | null>(null);
 
   useEffect(() => {
     if (isCrmActive) setCrmOpen(true);
   }, [isCrmActive]);
+  
+  useEffect(() => {
+    if (isCoachingActive) setCoachingOpen(true);
+  }, [isCoachingActive]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -80,6 +88,15 @@ export function AppSidebar() {
       setCrmOpen(true);
     } else {
       setCrmOpen((p) => !p);
+    }
+  }
+
+  function handleCoachingClick() {
+    if (!open) {
+      setOpen(true);
+      setCoachingOpen(true);
+    } else {
+      setCoachingOpen((p) => !p);
     }
   }
 
@@ -113,6 +130,32 @@ export function AppSidebar() {
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
+
+                
+                <Collapsible open={coachingOpen} className="group/collapsible">
+                  <SidebarMenuItem>
+                    <SidebarMenuButton
+                      ref={coachingRef}
+                      isActive={isCoachingActive}
+                      tooltip="Coaching"
+                      className="relative z-10 data-[active=true]:bg-transparent data-[active=true]:text-sidebar-accent-foreground data-[active=true]:font-medium hover:bg-transparent"
+                      onClick={handleCoachingClick}
+                    >
+                      <BicepsFlexed />
+                      <span>Coaching</span>
+                      <ChevronDown className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-180" />
+                    </SidebarMenuButton>
+                    <CollapsibleContent>
+                      <SidebarMenuSub>
+                        <SidebarMenuSubItem>
+                          <SidebarMenuSubButton asChild isActive={pathname === "/dashboard/coaching"}>
+                            <Link href="/dashboard/crm">Resumo</Link>
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                      </SidebarMenuSub>
+                    </CollapsibleContent>
+                  </SidebarMenuItem>
+                </Collapsible>
 
                 <Collapsible open={crmOpen} className="group/collapsible">
                   <SidebarMenuItem>
@@ -149,40 +192,27 @@ export function AppSidebar() {
                             <Link href="/dashboard/crm/leads">Leads</Link>
                           </SidebarMenuSubButton>
                         </SidebarMenuSubItem>
+                        <SidebarMenuSubItem>
+                          <SidebarMenuSubButton asChild isActive={pathname === "/dashboard/crm/follow-up"}>
+                            <Link href="/dashboard/crm/follow-up">Follow-up</Link>
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                        <SidebarMenuSubItem>
+                          <SidebarMenuSubButton asChild isActive={pathname === "/dashboard/crm/financial"}>
+                            <Link href="/dashboard/crm/financial">Financeiro</Link>
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
                       </SidebarMenuSub>
                     </CollapsibleContent>
                   </SidebarMenuItem>
                 </Collapsible>
-
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild tooltip="Novidades" className="relative z-10 hover:bg-sidebar-accent">
-                    <Link href="#"><Sparkles /><span>Novidades</span></Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild tooltip="Pedidos" className="relative z-10 hover:bg-sidebar-accent">
-                    <Link href="#"><ShoppingBag /><span>Pedidos</span></Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild tooltip="Produtos" className="relative z-10 hover:bg-sidebar-accent">
-                    <Link href="#"><Package2 /><span>Produtos</span></Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild tooltip="Clientes" className="relative z-10 hover:bg-sidebar-accent">
-                    <Link href="#"><Users /><span>Clientes</span></Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-
+                
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild tooltip="Configurações" className="relative z-10 hover:bg-sidebar-accent">
                     <Link href="#"><Settings2 /><span>Configurações</span></Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
+
               </SidebarMenu>
             </div>
           </SidebarGroupContent>
