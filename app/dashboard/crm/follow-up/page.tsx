@@ -27,7 +27,7 @@ import { Textarea } from "@/components/ui/textarea";
 import {
   Users, CalendarClock, Plus, Trash2, Pencil, AlertCircle,
   Clock, ArrowRightCircle, CheckCircle2, XCircle,
-  Snowflake, RefreshCcw, Search, CheckCheck,
+  Snowflake, RefreshCcw, Search, CheckCheck, MessageSquareOff, Ban, RectangleEllipsis,
 } from "lucide-react";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -40,9 +40,9 @@ interface FollowUp {
   email: string | null;
   type: FollowUpType;
   status: FollowUpStatus;
-  notes: string | null;
-  nextContactDate: string | null;
-  lastContactDate: string | null;
+  observations: string | null;
+  nextActionDate: string | null;
+  lastAttemptDate: string | null;
   createdAt: string | null;
 }
 
@@ -55,23 +55,23 @@ interface PersonSearchResult {
 }
 
 type FollowUpStatus = "WAITING" | "IN_PROGRESS" | "CONVERTED" | "DISCARDED";
-type FollowUpType   = "COLD_LEAD" | "INACTIVE_REACTIVATION";
+type FollowUpType   = "UNANSWERED_PROPOSAL" | "COLD_LEAD"| "RENEWAL_PENDING"| "INACTIVE"| "OTHER" ;
 type FollowUpFilter = "ALL" | "DUE_TODAY" | FollowUpStatus | FollowUpType;
 
 interface ScratchForm {
   name: string; whatsapp: string; email: string;
-  type: FollowUpType | ""; notes: string;
-  nextContactDate: string; lastContactDate: string;
+  type: FollowUpType | ""; observations: string;
+  nextActionDate: string; lastAttemptDate: string;
 }
 
 interface LinkForm {
-  type: FollowUpType | ""; notes: string;
-  nextContactDate: string; lastContactDate: string;
+  type: FollowUpType | ""; observations: string;
+  nextActionDate: string; lastAttemptDate: string;
 }
 
 interface EditForm {
   type: FollowUpType | ""; status: FollowUpStatus | "";
-  notes: string; nextContactDate: string; lastContactDate: string;
+  observations: string; nextActionDate: string; lastAttemptDate: string;
 }
 
 // ─── Config ──────────────────────────────────────────────────────────────────
@@ -85,17 +85,20 @@ const STATUS_CONFIG: Record<FollowUpStatus, { label: string; icon: React.Element
 
 const TYPE_CONFIG: Record<FollowUpType, { label: string; icon: React.ElementType; badgeClass: string; iconClass: string }> = {
   COLD_LEAD:             { label: "Lead Frio",  icon: Snowflake,  badgeClass: "bg-sky-100 text-sky-700 border-sky-200",          iconClass: "text-sky-500"     },
-  INACTIVE_REACTIVATION: { label: "Reativação", icon: RefreshCcw, badgeClass: "bg-violet-100 text-violet-700 border-violet-200", iconClass: "text-violet-500"  },
+  UNANSWERED_PROPOSAL: { label: "Proposta não respondida", icon: MessageSquareOff, badgeClass: "bg-orange-100 text-orange-700 border-orange-200", iconClass: "text-orange-500"  },
+  RENEWAL_PENDING: { label: "Renovação pendente", icon: RefreshCcw, badgeClass: "bg-violet-100 text-violet-700 border-violet-200", iconClass: "text-violet-500"  },
+  INACTIVE: { label: "Inativo", icon: Ban, badgeClass: "bg-red-100 text-red-700 border-red-200", iconClass: "text-red-500"  },
+  OTHER: { label: "Outros", icon: RectangleEllipsis, badgeClass: "bg-blue-100 text-blue-700 border-blue-200", iconClass: "text-blue-500"  },
 };
 
 const ALL_STATUSES: FollowUpStatus[] = ["WAITING", "IN_PROGRESS", "CONVERTED", "DISCARDED"];
-const ALL_TYPES: FollowUpType[]      = ["COLD_LEAD", "INACTIVE_REACTIVATION"];
+const ALL_TYPES: FollowUpType[]      = [ "COLD_LEAD" , "UNANSWERED_PROPOSAL", "RENEWAL_PENDING", "INACTIVE", "OTHER"];
 
 const EMPTY_SCRATCH: ScratchForm = {
-  name: "", whatsapp: "", email: "", type: "", notes: "", nextContactDate: "", lastContactDate: "",
+  name: "", whatsapp: "", email: "", type: "", observations: "", nextActionDate: "", lastAttemptDate: "",
 };
 
-const EMPTY_LINK: LinkForm = { type: "", notes: "", nextContactDate: "", lastContactDate: "" };
+const EMPTY_LINK: LinkForm = { type: "", observations: "", nextActionDate: "", lastAttemptDate: "" };
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -131,6 +134,14 @@ function stripEmpty(obj: Record<string, unknown>): Record<string, unknown> {
   return Object.fromEntries(Object.entries(obj).filter(([, v]) => v !== ""));
 }
 
+function nullEmpty(obj: Record<string, unknown>): Record<string, unknown> {
+  return Object.fromEntries(Object.entries(obj).map(([k, v]) => [k, v === "" ? null : v]));
+}
+
+function todayStr(): string {
+  return new Date().toISOString().split("T")[0];  
+}
+
 function getFilterDisplay(filter: FollowUpFilter): { icon: React.ElementType; iconClass: string; label: string } {
   if (filter === "ALL")       return { icon: Users,        iconClass: "text-muted-foreground", label: "Todos os follow-ups" };
   if (filter === "DUE_TODAY") return { icon: CalendarClock, iconClass: "text-orange-500",      label: "Ação para hoje"      };
@@ -145,23 +156,37 @@ function getFilterDisplay(filter: FollowUpFilter): { icon: React.ElementType; ic
 
 function validateScratch(f: ScratchForm): Record<string, string> {
   const e: Record<string, string> = {};
+  const today = todayStr();
   if (!f.name.trim()) e.name = "Nome é obrigatório";
   else if (f.name.trim().length < 2) e.name = "Mínimo 2 caracteres";
+  if (!f.email.trim()) e.email = "E-mail é obrigatório";
+  else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.email.trim())) e.email = "E-mail inválido";
   if (!f.whatsapp.trim()) e.whatsapp = "WhatsApp é obrigatório";
   else if (f.whatsapp.replace(/\D/g, "").length < 10) e.whatsapp = "Número inválido (mínimo 10 dígitos)";
   if (!f.type) e.type = "Selecione o tipo";
+  if (!f.nextActionDate) e.nextActionDate = "Próximo contato é obrigatório";
+  else if (f.nextActionDate <= today) e.nextActionDate = "Próximo contato deve ser uma data futura";
+  if (f.lastAttemptDate && f.lastAttemptDate >= today) e.lastAttemptDate = "Último contato deve ser uma data passada";
   return e;
 }
 
 function validateLink(f: LinkForm): Record<string, string> {
   const e: Record<string, string> = {};
+  const today = todayStr();  
   if (!f.type) e.type = "Selecione o tipo";
+  if (!f.nextActionDate) e.nextActionDate = "Próximo contato é obrigatório";
+  else if (f.nextActionDate <= today) e.nextActionDate = "Próximo contato deve ser uma data futura";
+  if (f.lastAttemptDate && f.lastAttemptDate >= today) e.lastAttemptDate = "Último contato deve ser uma data passada";
   return e;
 }
 
 function validateEdit(f: EditForm): Record<string, string> {
   const e: Record<string, string> = {};
+  const today = todayStr();
   if (!f.type) e.type = "Selecione o tipo";
+  if (!f.nextActionDate) e.nextActionDate = "Próximo contato é obrigatório";
+  else if /*(f.nextActionDate <= today) e.nextActionDate = "Próximo contato deve ser uma data futura";
+  if*/ (f.lastAttemptDate && f.lastAttemptDate >= today) e.lastAttemptDate = "Último contato deve ser uma data passada";
   return e;
 }
 
@@ -199,9 +224,9 @@ function FieldError({ msg }: { msg?: string }) {
 }
 
 function FollowUpContextFields({
-  type, notes, nextContactDate, lastContactDate, errors, showStatus, status, onChange,
+  type, observations, nextActionDate, lastAttemptDate, errors, showStatus, status, onChange,
 }: {
-  type: FollowUpType | ""; notes: string; nextContactDate: string; lastContactDate: string;
+  type: FollowUpType | ""; observations: string; nextActionDate: string; lastAttemptDate: string;
   errors: Record<string, string>; showStatus?: boolean; status?: FollowUpStatus | "";
   onChange: (patch: Partial<EditForm>) => void;
 }) {
@@ -256,18 +281,22 @@ function FollowUpContextFields({
 
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-1">
-          <Label>Próximo contato</Label>
-          <Input type="date" value={nextContactDate} onChange={(e) => onChange({ nextContactDate: e.target.value })} />
+          <Label>Próximo contato <span className="text-destructive">*</span></Label>
+          <Input type="date" value={nextActionDate} onChange={(e) => onChange({ nextActionDate: e.target.value })}
+            className={cn(errors.nextActionDate && "border-destructive focus-visible:ring-destructive")} />
+          <FieldError msg={errors.nextActionDate} />
         </div>
         <div className="space-y-1">
           <Label>Último contato</Label>
-          <Input type="date" value={lastContactDate} onChange={(e) => onChange({ lastContactDate: e.target.value })} />
+          <Input type="date" value={lastAttemptDate} onChange={(e) => onChange({ lastAttemptDate: e.target.value })}
+            className={cn(errors.lastAttemptDate && "border-destructive focus-visible:ring-destructive")} />
+          <FieldError msg={errors.lastAttemptDate} />
         </div>
       </div>
 
       <div className="space-y-1">
         <Label>Observações</Label>
-        <Textarea value={notes} onChange={(e) => onChange({ notes: e.target.value })} rows={3} />
+        <Textarea value={observations} onChange={(e) => onChange({ observations: e.target.value })} rows={3} />
       </div>
     </>
   );
@@ -301,7 +330,7 @@ export default function FollowUpPage() {
 
   // Edit dialog
   const [editingRecord, setEditingRecord] = useState<FollowUp | null>(null);
-  const [editForm,      setEditForm]      = useState<EditForm>({ type: "", status: "", notes: "", nextContactDate: "", lastContactDate: "" });
+  const [editForm,      setEditForm]      = useState<EditForm>({ type: "", status: "", observations: "", nextActionDate: "", lastAttemptDate: "" });
   const [editErrors,    setEditErrors]    = useState<Record<string, string>>({});
   const [editSubmitting,setEditSubmitting]= useState(false);
 
@@ -383,9 +412,9 @@ export default function FollowUpPage() {
     setEditForm({
       type:            record.type,
       status:          record.status,
-      notes:           record.notes ?? "",
-      nextContactDate: record.nextContactDate?.split("T")[0] ?? "",
-      lastContactDate: record.lastContactDate?.split("T")[0] ?? "",
+      observations:           record.observations ?? "",
+      nextActionDate: record.nextActionDate?.split("T")[0] ?? "",
+      lastAttemptDate: record.lastAttemptDate?.split("T")[0] ?? "",
     });
     setEditErrors({});
   }
@@ -399,10 +428,11 @@ export default function FollowUpPage() {
     if (Object.keys(errors).length > 0) { setScratchErrors(errors); return; }
     setCreateSubmitting(true);
     try {
+      const body = nullEmpty(scratchForm as unknown as Record<string, unknown>);
       const res = await fetch("/api/follow-up", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(stripEmpty(scratchForm as unknown as Record<string, unknown>)),
+        body: JSON.stringify(body),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error ?? "Erro ao criar follow-up");
@@ -421,7 +451,7 @@ export default function FollowUpPage() {
     if (Object.keys(errors).length > 0) { setLinkErrors(errors); return; }
     setCreateSubmitting(true);
     try {
-      const body = stripEmpty({ ...linkForm, personId: selectedPerson.id } as unknown as Record<string, unknown>);
+      const body = nullEmpty({ ...linkForm, personId: selectedPerson.id } as unknown as Record<string, unknown>);
       const res = await fetch("/api/follow-up", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -446,7 +476,7 @@ export default function FollowUpPage() {
       const res = await fetch(`/api/follow-up/${editingRecord!.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(stripEmpty(editForm as unknown as Record<string, unknown>)),
+        body: JSON.stringify(nullEmpty(editForm as unknown as Record<string, unknown>)),
       });
       if (!res.ok) throw new Error("Erro ao atualizar follow-up");
       setEditingRecord(null);
@@ -680,10 +710,10 @@ export default function FollowUpPage() {
                         </SelectContent>
                       </Select>
                     </TableCell>
-                    <TableCell className="text-sm whitespace-nowrap">{formatDate(record.nextContactDate)}</TableCell>
-                    <TableCell className="text-sm whitespace-nowrap">{formatDate(record.lastContactDate)}</TableCell>
-                    <TableCell className="text-sm text-muted-foreground max-w-[160px] truncate" title={record.notes ?? ""}>
-                      {record.notes || "—"}
+                    <TableCell className="text-sm whitespace-nowrap">{formatDate(record.nextActionDate)}</TableCell>
+                    <TableCell className="text-sm whitespace-nowrap">{formatDate(record.lastAttemptDate)}</TableCell>
+                    <TableCell className="text-sm text-muted-foreground max-w-[160px] truncate" title={record.observations ?? ""}>
+                      {record.observations || "—"}
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -769,11 +799,13 @@ export default function FollowUpPage() {
                 </div>
 
                 <div className="space-y-1">
-                  <Label>E-mail</Label>
+                  <Label>E-mail <span className="text-destructive">*</span></Label>
                   <Input
                     type="email" value={scratchForm.email}
                     onChange={(e) => setScratchForm((f) => ({ ...f, email: e.target.value }))}
+                    className={cn(scratchErrors.email && "border-destructive focus-visible:ring-destructive")}
                   />
+                  <FieldError msg={scratchErrors.email} />
                 </div>
 
                 <div className="border-t pt-3">
@@ -781,9 +813,9 @@ export default function FollowUpPage() {
                   <div className="grid gap-4">
                     <FollowUpContextFields
                       type={scratchForm.type}
-                      notes={scratchForm.notes}
-                      nextContactDate={scratchForm.nextContactDate}
-                      lastContactDate={scratchForm.lastContactDate}
+                      observations={scratchForm.observations}
+                      nextActionDate={scratchForm.nextActionDate}
+                      lastAttemptDate={scratchForm.lastAttemptDate}
                       errors={scratchErrors}
                       onChange={(patch) => setScratchForm((f) => ({ ...f, ...patch }))}
                     />
@@ -867,9 +899,9 @@ export default function FollowUpPage() {
                     <div className="grid gap-4">
                       <FollowUpContextFields
                         type={linkForm.type}
-                        notes={linkForm.notes}
-                        nextContactDate={linkForm.nextContactDate}
-                        lastContactDate={linkForm.lastContactDate}
+                        observations={linkForm.observations}
+                        nextActionDate={linkForm.nextActionDate}
+                        lastAttemptDate={linkForm.lastAttemptDate}
                         errors={linkErrors}
                         onChange={(patch) => setLinkForm((f) => ({ ...f, ...patch }))}
                       />
@@ -901,9 +933,9 @@ export default function FollowUpPage() {
             <FollowUpContextFields
               type={editForm.type}
               status={editForm.status}
-              notes={editForm.notes}
-              nextContactDate={editForm.nextContactDate}
-              lastContactDate={editForm.lastContactDate}
+              observations={editForm.observations}
+              nextActionDate={editForm.nextActionDate}
+              lastAttemptDate={editForm.lastAttemptDate}
               errors={editErrors}
               showStatus
               onChange={(patch) => setEditForm((f) => ({ ...f, ...patch }))}

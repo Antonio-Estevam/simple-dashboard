@@ -102,10 +102,10 @@ const TIER_OPTIONS = [
 
 const EMPTY_SCRATCH: ScratchForm = {
   name: "", whatsapp: "", email: "", address: "", birthDate: "",
-  source: "", notes: "", plan: "", tier: "", cycleStart: "", cycleEnd: "", mfitLink: "",
+  source: "", notes: "", plan: "BASIC", tier: "A", cycleStart: "", cycleEnd: "", mfitLink: "",
 };
 
-const EMPTY_CONVERT: ConvertForm = { plan: "", tier: "", cycleStart: "", cycleEnd: "", mfitLink: "" };
+const EMPTY_CONVERT: ConvertForm = { plan: "BASIC", tier: "A", cycleStart: "", cycleEnd: "", mfitLink: "" };
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -138,15 +138,24 @@ function validateScratch(f: ScratchForm): Record<string, string> {
   const e: Record<string, string> = {};
   if (!f.name.trim()) e.name = "Nome é obrigatório";
   else if (f.name.trim().length < 2) e.name = "Mínimo 2 caracteres";
+  if (!f.email.trim()) e.email = "E-mail é obrigatório";
+  else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.email.trim())) e.email = "E-mail inválido";
+  if (!f.birthDate) e.birthDate = "Nascimento é obrigatório";
   if (!f.whatsapp.trim()) e.whatsapp = "WhatsApp é obrigatório";
   else if (f.whatsapp.replace(/\D/g, "").length < 10) e.whatsapp = "Número inválido (mínimo 10 dígitos)";
+  if (!f.address.trim()) e.address = "Endereço é obrigatório";
+  if (!f.source) e.source = "Selecione a fonte";
   if (!f.plan) e.plan = "Selecione um plano";
+  if (!f.tier) e.tier = "Selecione o tier";
+  if (!f.cycleStart) e.cycleStart = "Início do ciclo é obrigatório";
   return e;
 }
 
 function validateConvert(f: ConvertForm): Record<string, string> {
   const e: Record<string, string> = {};
   if (!f.plan) e.plan = "Selecione um plano";
+  if (!f.tier) e.tier = "Selecione o tier";
+  if (!f.cycleStart) e.cycleStart = "Início do ciclo é obrigatório";
   return e;
 }
 
@@ -154,9 +163,16 @@ function validateEdit(f: EditForm): Record<string, string> {
   const e: Record<string, string> = {};
   if (!f.name.trim()) e.name = "Nome é obrigatório";
   else if (f.name.trim().length < 2) e.name = "Mínimo 2 caracteres";
+  if (!f.email.trim()) e.email = "E-mail é obrigatório";
+  else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.email.trim())) e.email = "E-mail inválido";
+  if (!f.birthDate) e.birthDate = "Nascimento é obrigatório";
   if (!f.whatsapp.trim()) e.whatsapp = "WhatsApp é obrigatório";
   else if (f.whatsapp.replace(/\D/g, "").length < 10) e.whatsapp = "Número inválido (mínimo 10 dígitos)";
+  if (!f.address.trim()) e.address = "Endereço é obrigatório";
+  if (!f.source) e.source = "Selecione a fonte";
   if (!f.plan) e.plan = "Selecione um plano";
+  if (!f.tier) e.tier = "Selecione o tier";
+  if (!f.cycleStart) e.cycleStart = "Início do ciclo é obrigatório";
   return e;
 }
 
@@ -224,21 +240,24 @@ function ClientContextFields({
       <div className="grid grid-cols-2 gap-4">
         <PlanSelect value={plan} errors={errors} onChange={(v) => onChange({ plan: v as Plan })} />
         <div className="space-y-1">
-          <Label>Tier</Label>
+          <Label>Tier <span className="text-destructive">*</span></Label>
           <Select value={tier} onValueChange={(v) => onChange({ tier: v })}>
-            <SelectTrigger><SelectValue placeholder="Selecione" /></SelectTrigger>
+            <SelectTrigger className={cn(errors.tier && "border-destructive")}><SelectValue placeholder="Selecione" /></SelectTrigger>
             <SelectContent>
               {TIER_OPTIONS.map((t) => (
                 <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>
               ))}
             </SelectContent>
           </Select>
+          <FieldError msg={errors.tier} />
         </div>
       </div>
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-1">
-          <Label>Início do ciclo</Label>
-          <Input type="date" value={cycleStart} onChange={(e) => onChange({ cycleStart: e.target.value })} />
+          <Label>Início do ciclo <span className="text-destructive">*</span></Label>
+          <Input type="date" value={cycleStart} onChange={(e) => onChange({ cycleStart: e.target.value })}
+            className={cn(errors.cycleStart && "border-destructive focus-visible:ring-destructive")} />
+          <FieldError msg={errors.cycleStart} />
         </div>
         <div className="space-y-1">
           <Label>Fim do ciclo</Label>
@@ -682,33 +701,40 @@ export default function ClientsPage() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1">
-                    <Label>E-mail</Label>
+                    <Label>E-mail <span className="text-destructive">*</span></Label>
                     <Input type="email" value={scratchForm.email}
-                      onChange={(e) => setScratchForm((f) => ({ ...f, email: e.target.value }))} />
+                      onChange={(e) => setScratchForm((f) => ({ ...f, email: e.target.value }))}
+                      className={cn(scratchErrors.email && "border-destructive focus-visible:ring-destructive")} />
+                    <FieldError msg={scratchErrors.email} />
                   </div>
                   <div className="space-y-1">
-                    <Label>Nascimento</Label>
+                    <Label>Nascimento <span className="text-destructive">*</span></Label>
                     <Input type="date" value={scratchForm.birthDate}
-                      onChange={(e) => setScratchForm((f) => ({ ...f, birthDate: e.target.value }))} />
+                      onChange={(e) => setScratchForm((f) => ({ ...f, birthDate: e.target.value }))}
+                      className={cn(scratchErrors.birthDate && "border-destructive focus-visible:ring-destructive")} />
+                    <FieldError msg={scratchErrors.birthDate} />
                   </div>
                 </div>
 
                 <div className="space-y-1">
-                  <Label>Endereço</Label>
+                  <Label>Endereço <span className="text-destructive">*</span></Label>
                   <Input value={scratchForm.address}
-                    onChange={(e) => setScratchForm((f) => ({ ...f, address: e.target.value }))} />
+                    onChange={(e) => setScratchForm((f) => ({ ...f, address: e.target.value }))}
+                    className={cn(scratchErrors.address && "border-destructive focus-visible:ring-destructive")} />
+                  <FieldError msg={scratchErrors.address} />
                 </div>
 
                 <div className="space-y-1">
-                  <Label>Fonte</Label>
+                  <Label>Fonte <span className="text-destructive">*</span></Label>
                   <Select value={scratchForm.source} onValueChange={(v) => setScratchForm((f) => ({ ...f, source: v }))}>
-                    <SelectTrigger><SelectValue placeholder="Selecione" /></SelectTrigger>
+                    <SelectTrigger className={cn(scratchErrors.source && "border-destructive")}><SelectValue placeholder="Selecione" /></SelectTrigger>
                     <SelectContent>
                       {SOURCE_OPTIONS.map((o) => (
                         <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
+                  <FieldError msg={scratchErrors.source} />
                 </div>
 
                 <div className="space-y-1">
@@ -861,33 +887,40 @@ export default function ClientsPage() {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1">
-                <Label>E-mail</Label>
+                <Label>E-mail <span className="text-destructive">*</span></Label>
                 <Input type="email" value={editForm.email}
-                  onChange={(e) => setEditForm((f) => ({ ...f, email: e.target.value }))} />
+                  onChange={(e) => setEditForm((f) => ({ ...f, email: e.target.value }))}
+                  className={cn(editErrors.email && "border-destructive focus-visible:ring-destructive")} />
+                <FieldError msg={editErrors.email} />
               </div>
               <div className="space-y-1">
-                <Label>Nascimento</Label>
+                <Label>Nascimento <span className="text-destructive">*</span></Label>
                 <Input type="date" value={editForm.birthDate}
-                  onChange={(e) => setEditForm((f) => ({ ...f, birthDate: e.target.value }))} />
+                  onChange={(e) => setEditForm((f) => ({ ...f, birthDate: e.target.value }))}
+                  className={cn(editErrors.birthDate && "border-destructive focus-visible:ring-destructive")} />
+                <FieldError msg={editErrors.birthDate} />
               </div>
             </div>
 
             <div className="space-y-1">
-              <Label>Endereço</Label>
+              <Label>Endereço <span className="text-destructive">*</span></Label>
               <Input value={editForm.address}
-                onChange={(e) => setEditForm((f) => ({ ...f, address: e.target.value }))} />
+                onChange={(e) => setEditForm((f) => ({ ...f, address: e.target.value }))}
+                className={cn(editErrors.address && "border-destructive focus-visible:ring-destructive")} />
+              <FieldError msg={editErrors.address} />
             </div>
 
             <div className="space-y-1">
-              <Label>Fonte</Label>
+              <Label>Fonte <span className="text-destructive">*</span></Label>
               <Select value={editForm.source} onValueChange={(v) => setEditForm((f) => ({ ...f, source: v }))}>
-                <SelectTrigger><SelectValue placeholder="Selecione" /></SelectTrigger>
+                <SelectTrigger className={cn(editErrors.source && "border-destructive")}><SelectValue placeholder="Selecione" /></SelectTrigger>
                 <SelectContent>
                   {SOURCE_OPTIONS.map((o) => (
                     <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
+              <FieldError msg={editErrors.source} />
             </div>
 
             <div className="space-y-1">

@@ -178,16 +178,6 @@ export function AppSidebar() {
                           </SidebarMenuSubButton>
                         </SidebarMenuSubItem>
                         <SidebarMenuSubItem>
-                          <SidebarMenuSubButton asChild isActive={pathname === "/dashboard/crm/clients"}>
-                            <Link href="/dashboard/crm/clients">Clientes Ativos</Link>
-                          </SidebarMenuSubButton>
-                        </SidebarMenuSubItem>
-                        <SidebarMenuSubItem>
-                          <SidebarMenuSubButton asChild isActive={pathname === "/dashboard/crm/inactive-clients"}>
-                            <Link href="/dashboard/crm/inactive-clients">Clientes Inativos</Link>
-                          </SidebarMenuSubButton>
-                        </SidebarMenuSubItem>
-                        <SidebarMenuSubItem>
                           <SidebarMenuSubButton asChild isActive={pathname === "/dashboard/crm/leads"}>
                             <Link href="/dashboard/crm/leads">Leads</Link>
                           </SidebarMenuSubButton>
@@ -195,6 +185,16 @@ export function AppSidebar() {
                         <SidebarMenuSubItem>
                           <SidebarMenuSubButton asChild isActive={pathname === "/dashboard/crm/follow-up"}>
                             <Link href="/dashboard/crm/follow-up">Follow-up</Link>
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                        <SidebarMenuSubItem>
+                          <SidebarMenuSubButton asChild isActive={pathname === "/dashboard/crm/clients"}>
+                            <Link href="/dashboard/crm/clients">Clientes Ativos</Link>
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                        <SidebarMenuSubItem>
+                          <SidebarMenuSubButton asChild isActive={pathname === "/dashboard/crm/inactive-clients"}>
+                            <Link href="/dashboard/crm/inactive-clients">Clientes Inativos</Link>
                           </SidebarMenuSubButton>
                         </SidebarMenuSubItem>
                         <SidebarMenuSubItem>
