@@ -60,6 +60,7 @@ type FollowUpFilter = "ALL" | "DUE_TODAY" | FollowUpStatus | FollowUpType;
 
 interface ScratchForm {
   name: string; whatsapp: string; email: string;
+  birthDate: string; source: string;
   type: FollowUpType | ""; observations: string;
   nextActionDate: string; lastAttemptDate: string;
 }
@@ -94,8 +95,16 @@ const TYPE_CONFIG: Record<FollowUpType, { label: string; icon: React.ElementType
 const ALL_STATUSES: FollowUpStatus[] = ["WAITING", "IN_PROGRESS", "CONVERTED", "DISCARDED"];
 const ALL_TYPES: FollowUpType[]      = [ "COLD_LEAD" , "UNANSWERED_PROPOSAL", "RENEWAL_PENDING", "INACTIVE", "OTHER"];
 
+const SOURCE_OPTIONS = [
+  { value: "INSTAGRAM",            label: "Instagram"            },
+  { value: "REFERRAL",             label: "Indicação"            },
+  { value: "IN_PERSON_ASSESSMENT", label: "Avaliação presencial" },
+  { value: "OTHER",                label: "Outro"                },
+];
+
 const EMPTY_SCRATCH: ScratchForm = {
-  name: "", whatsapp: "", email: "", type: "", observations: "", nextActionDate: "", lastAttemptDate: "",
+  name: "", whatsapp: "", email: "", birthDate: "", source: "",
+  type: "", observations: "", nextActionDate: "", lastAttemptDate: "",
 };
 
 const EMPTY_LINK: LinkForm = { type: "", observations: "", nextActionDate: "", lastAttemptDate: "" };
@@ -163,6 +172,8 @@ function validateScratch(f: ScratchForm): Record<string, string> {
   else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.email.trim())) e.email = "E-mail inválido";
   if (!f.whatsapp.trim()) e.whatsapp = "WhatsApp é obrigatório";
   else if (f.whatsapp.replace(/\D/g, "").length < 10) e.whatsapp = "Número inválido (mínimo 10 dígitos)";
+  if (!f.birthDate) e.birthDate = "Nascimento é obrigatório";
+  if (!f.source) e.source = "Selecione a fonte";
   if (!f.type) e.type = "Selecione o tipo";
   if (!f.nextActionDate) e.nextActionDate = "Próximo contato é obrigatório";
   else if (f.nextActionDate <= today) e.nextActionDate = "Próximo contato deve ser uma data futura";
@@ -806,6 +817,31 @@ export default function FollowUpPage() {
                     className={cn(scratchErrors.email && "border-destructive focus-visible:ring-destructive")}
                   />
                   <FieldError msg={scratchErrors.email} />
+                </div>
+
+                <div className="space-y-1">
+                  <Label>Nascimento <span className="text-destructive">*</span></Label>
+                  <Input
+                    type="date" value={scratchForm.birthDate}
+                    onChange={(e) => setScratchForm((f) => ({ ...f, birthDate: e.target.value }))}
+                    className={cn(scratchErrors.birthDate && "border-destructive focus-visible:ring-destructive")}
+                  />
+                  <FieldError msg={scratchErrors.birthDate} />
+                </div>
+
+                <div className="space-y-1">
+                  <Label>Fonte <span className="text-destructive">*</span></Label>
+                  <Select value={scratchForm.source} onValueChange={(v) => setScratchForm((f) => ({ ...f, source: v }))}>
+                    <SelectTrigger className={cn(scratchErrors.source && "border-destructive")}>
+                      <SelectValue placeholder="Selecione" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {SOURCE_OPTIONS.map((o) => (
+                        <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FieldError msg={scratchErrors.source} />
                 </div>
 
                 <div className="border-t pt-3">

@@ -51,6 +51,8 @@ type Filter = Status | "ALL" | "DUE_TODAY";
 interface FormValues {
   name: string;
   whatsapp: string;
+  email: string;
+  birthDate: string;
   source: string;
   notes: string;
   planInterest: string;
@@ -90,12 +92,16 @@ const SOURCE_LABEL: Record<string, string> = Object.fromEntries(SOURCE_OPTIONS.m
 const PLAN_LABEL:   Record<string, string> = Object.fromEntries(PLAN_OPTIONS.map((o)   => [o.value, o.label]));
 
 const EMPTY_FORM: FormValues = {
-  name: "", whatsapp: "", source: "", notes: "",
-  planInterest: "", goal: "", status: "", scriptUsed: "",
-  firstContactDate: "", nextContactDate: "",
+  name: "", whatsapp: "", email: "", birthDate: "",
+  source: "", notes: "", planInterest: "", goal: "", status: "",
+  scriptUsed: "", firstContactDate: "", nextContactDate: "",
 };
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
+
+function stripEmpty(obj: Record<string, unknown>): Record<string, unknown> {
+  return Object.fromEntries(Object.entries(obj).filter(([, v]) => v !== ""));
+}
 
 function maskWhatsApp(input: string): string {
   const isIntl = input.startsWith("+");
@@ -124,7 +130,7 @@ function formatDate(dateStr: string | null) {
   return new Date(dateStr).toLocaleDateString("pt-BR");
 }
 
-function validateForm(form: FormValues): Record<string, string> {
+function validateForm(form: FormValues, showPersonFields = true): Record<string, string> {
   const e: Record<string, string> = {};
   if (!form.name.trim())              e.name        = "Nome é obrigatório";
   else if (form.name.trim().length < 2) e.name      = "Mínimo 2 caracteres";
@@ -133,6 +139,11 @@ function validateForm(form: FormValues): Record<string, string> {
                                        e.whatsapp   = "Número inválido (mínimo 10 dígitos)";
   if (!form.source)                   e.source      = "Selecione a fonte";
   if (!form.planInterest)             e.planInterest= "Selecione um plano";
+  if (showPersonFields) {
+    if (!form.email.trim())           e.email       = "E-mail é obrigatório";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) e.email = "E-mail inválido";
+    if (!form.birthDate)              e.birthDate   = "Nascimento é obrigatório";
+  }
   return e;
 }
 
@@ -157,12 +168,13 @@ function FieldError({ msg }: { msg?: string }) {
 }
 
 function LeadFormFields({
-  form, errors, onChange, showStatus = false,
+  form, errors, onChange, showStatus = false, showPersonFields = true,
 }: {
   form: FormValues;
   errors: Record<string, string>;
   onChange: (patch: Partial<FormValues>) => void;
   showStatus?: boolean;
+  showPersonFields?: boolean;
 }) {
   return (
     <div className="grid gap-4 py-2">
@@ -194,6 +206,35 @@ function LeadFormFields({
           <FieldError msg={errors.whatsapp} />
         </div>
       </div>
+
+      {showPersonFields && (
+        <>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-1">
+              <Label htmlFor="lf-email">E-mail <span className="text-destructive">*</span></Label>
+              <Input
+                id="lf-email"
+                type="email"
+                value={form.email}
+                onChange={(e) => onChange({ email: e.target.value })}
+                className={cn(errors.email && "border-destructive focus-visible:ring-destructive")}
+              />
+              <FieldError msg={errors.email} />
+            </div>
+            <div className="space-y-1">
+              <Label htmlFor="lf-birthdate">Nascimento <span className="text-destructive">*</span></Label>
+              <Input
+                id="lf-birthdate"
+                type="date"
+                value={form.birthDate}
+                onChange={(e) => onChange({ birthDate: e.target.value })}
+                className={cn(errors.birthDate && "border-destructive focus-visible:ring-destructive")}
+              />
+              <FieldError msg={errors.birthDate} />
+            </div>
+          </div>
+        </>
+      )}
 
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-1">
@@ -399,14 +440,14 @@ export default function LeadsPage() {
   }
 
   async function handleEdit() {
-    const errors = validateForm(editForm);
+    const errors = validateForm(editForm, false);
     if (Object.keys(errors).length > 0) { setEditErrors(errors); return; }
     setEditSubmitting(true);
     try {
       const res = await fetch(`/api/leads/${editingLead!.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(editForm),
+        body: JSON.stringify(stripEmpty(editForm as unknown as Record<string, unknown>)),
       });
       if (!res.ok) throw new Error("Erro ao atualizar lead");
       setEditingLead(null);
@@ -668,6 +709,7 @@ export default function LeadsPage() {
             errors={editErrors}
             onChange={(patch) => setEditForm((f) => ({ ...f, ...patch }))}
             showStatus
+            showPersonFields={false}
           />
           <DialogFooter>
             <Button variant="outline" onClick={() => setEditingLead(null)}>Cancelar</Button>
