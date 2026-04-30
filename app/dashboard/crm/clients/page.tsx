@@ -237,7 +237,7 @@ function ClientContextFields({
 }) {
   return (
     <>
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <PlanSelect value={plan} errors={errors} onChange={(v) => onChange({ plan: v as Plan })} />
         <div className="space-y-1">
           <Label>Tier <span className="text-destructive">*</span></Label>
@@ -252,7 +252,7 @@ function ClientContextFields({
           <FieldError msg={errors.tier} />
         </div>
       </div>
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="space-y-1">
           <Label>Início do ciclo <span className="text-destructive">*</span></Label>
           <Input type="date" value={cycleStart} onChange={(e) => onChange({ cycleStart: e.target.value })}
@@ -629,7 +629,7 @@ export default function ClientsPage() {
                       {client.notes || "—"}
                     </TableCell>
                     <TableCell>
-                      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="flex items-center gap-1 transition-opacity sm:opacity-0 sm:group-hover:opacity-100">
                         <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => openEdit(client)} aria-label="Editar">
                           <Pencil className="h-3.5 w-3.5" />
                         </Button>
@@ -659,7 +659,7 @@ export default function ClientsPage() {
 
       {/* ── Create Dialog ── */}
       <Dialog open={createOpen} onOpenChange={(o) => { setCreateOpen(o); if (!o) { setScratchErrors({}); setConvertErrors({}); } }}>
-        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+        <DialogContent className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>Novo Cliente</DialogTitle>
           </DialogHeader>
@@ -677,7 +677,7 @@ export default function ClientsPage() {
                   <p className="text-sm text-destructive bg-destructive/10 rounded p-2">{scratchErrors._general}</p>
                 )}
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-1">
                     <Label>Nome <span className="text-destructive">*</span></Label>
                     <Input
@@ -699,7 +699,7 @@ export default function ClientsPage() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-1">
                     <Label>E-mail <span className="text-destructive">*</span></Label>
                     <Input type="email" value={scratchForm.email}
@@ -854,7 +854,7 @@ export default function ClientsPage() {
 
       {/* ── Edit Dialog ── */}
       <Dialog open={!!editingClient} onOpenChange={(o) => { if (!o) { setEditingClient(null); setEditErrors({}); } }}>
-        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+        <DialogContent className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>Editar Cliente</DialogTitle>
           </DialogHeader>
@@ -863,7 +863,7 @@ export default function ClientsPage() {
               <p className="text-sm text-destructive bg-destructive/10 rounded p-2">{editErrors._general}</p>
             )}
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1">
                 <Label>Nome <span className="text-destructive">*</span></Label>
                 <Input
@@ -885,7 +885,7 @@ export default function ClientsPage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1">
                 <Label>E-mail <span className="text-destructive">*</span></Label>
                 <Input type="email" value={editForm.email}
@@ -941,7 +941,7 @@ export default function ClientsPage() {
                   errors={editErrors}
                   onChange={(patch) => setEditForm((f) => ({ ...f, ...patch }))}
                 />
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-1">
                     <Label>Último score do ciclo</Label>
                     <Input

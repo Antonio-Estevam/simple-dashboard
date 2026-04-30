@@ -102,7 +102,7 @@ export function AppSidebar() {
 
   return (
     <Sidebar collapsible="icon">
-      <SidebarContent>
+      <SidebarContent className="bg-secondary">
         <SidebarGroup>
           <SidebarGroupContent>
             <div ref={containerRef} className="relative">
@@ -219,7 +219,7 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter>
+      <SidebarFooter className="bg-secondary">
         <SidebarMenu>
           <SidebarMenuItem>
             <ThemeToggle />

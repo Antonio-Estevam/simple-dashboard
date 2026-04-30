@@ -34,7 +34,7 @@ export default function DashboardLayout({
       <body className={cn("min-h-screen bg-background font-sans antialiased", inter.className)}>
         <ThemeProvider>
           <NavigationProgress />
-          <SidebarProvider>
+          <SidebarProvider defaultOpen={false}>
             <AppSidebar />
             <SidebarInset>
               <header className="flex h-12 items-center gap-2 border-b px-4">

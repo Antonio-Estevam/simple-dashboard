@@ -730,7 +730,7 @@ export default function BillingPage() {
                     </TableCell>
                     <TableCell><StatusBadge status={record.status} /></TableCell>
                     <TableCell>
-                      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="flex items-center gap-1 transition-opacity sm:opacity-0 sm:group-hover:opacity-100">
                         {(record.status === "PENDING" || record.status === "OVERDUE") && (
                           <Button
                             variant="ghost" size="sm"
@@ -825,7 +825,7 @@ export default function BillingPage() {
 
       {/* ── Create Dialog ── */}
       <Dialog open={createOpen} onOpenChange={(o) => { setCreateOpen(o); if (!o) setCreateErrors({}); }}>
-        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+        <DialogContent className="sm:max-w-lg">
           <DialogHeader><DialogTitle>Nova Cobrança</DialogTitle></DialogHeader>
           <div className="grid gap-4 py-2">
             {createErrors._general && (
@@ -841,7 +841,7 @@ export default function BillingPage() {
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1">
                 <Label>Mês <span className="text-destructive">*</span></Label>
                 <Select value={createForm.month} onValueChange={(v) => setCreateForm((f) => ({ ...f, month: v }))}>
@@ -865,7 +865,7 @@ export default function BillingPage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1">
                 <Label>Valor <span className="text-destructive">*</span></Label>
                 <Input
@@ -891,7 +891,7 @@ export default function BillingPage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1">
                 <Label>Dia de vencimento</Label>
                 <Input
@@ -933,7 +933,7 @@ export default function BillingPage() {
 
       {/* ── Edit Dialog ── */}
       <Dialog open={!!editingRecord} onOpenChange={(o) => { if (!o) { setEditingRecord(null); setEditErrors({}); } }}>
-        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+        <DialogContent className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>Editar Cobrança — {editingRecord?.personName}</DialogTitle>
           </DialogHeader>
@@ -942,7 +942,7 @@ export default function BillingPage() {
               <p className="text-sm text-destructive bg-destructive/10 rounded p-2">{editErrors._general}</p>
             )}
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1">
                 <Label>Mês</Label>
                 <Select value={editForm.month} onValueChange={(v) => setEditForm((f) => ({ ...f, month: v }))}>
@@ -959,7 +959,7 @@ export default function BillingPage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1">
                 <Label>Valor <span className="text-destructive">*</span></Label>
                 <Input
@@ -985,7 +985,7 @@ export default function BillingPage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1">
                 <Label>Dia de vencimento</Label>
                 <Input type="number" min={1} max={31} value={editForm.dueDay}
@@ -1004,7 +1004,7 @@ export default function BillingPage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1">
                 <Label>Status</Label>
                 <Select value={editForm.status} onValueChange={(v) => setEditForm((f) => ({ ...f, status: v as PaymentStatus }))}>
@@ -1129,7 +1129,7 @@ export default function BillingPage() {
 
       {/* ── Batch Dialog ── */}
       <Dialog open={batchOpen} onOpenChange={(o) => { setBatchOpen(o); if (!o) { setBatchErrors({}); setBatchResult(null); } }}>
-        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+        <DialogContent className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <ListChecks className="h-5 w-5" />
@@ -1166,7 +1166,7 @@ export default function BillingPage() {
                 <p className="text-sm text-destructive bg-destructive/10 rounded p-2">{batchErrors._general}</p>
               )}
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <Label>Mês</Label>
                   <Select value={batchForm.month} onValueChange={(v) => setBatchForm((f) => ({ ...f, month: v }))}>
@@ -1183,7 +1183,7 @@ export default function BillingPage() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <Label>Valor padrão <span className="text-destructive">*</span></Label>
                   <Input

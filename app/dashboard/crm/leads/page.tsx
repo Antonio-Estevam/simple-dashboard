@@ -182,7 +182,7 @@ function LeadFormFields({
         <p className="text-sm text-destructive bg-destructive/10 rounded p-2">{errors._general}</p>
       )}
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="space-y-1">
           <Label htmlFor="lf-name">Nome <span className="text-destructive">*</span></Label>
           <Input
@@ -209,7 +209,7 @@ function LeadFormFields({
 
       {showPersonFields && (
         <>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1">
               <Label htmlFor="lf-email">E-mail <span className="text-destructive">*</span></Label>
               <Input
@@ -236,7 +236,7 @@ function LeadFormFields({
         </>
       )}
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="space-y-1">
           <Label>Fonte <span className="text-destructive">*</span></Label>
           <Select value={form.source} onValueChange={(v) => onChange({ source: v })}>
@@ -301,7 +301,7 @@ function LeadFormFields({
         />
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="space-y-1">
           <Label htmlFor="lf-first">Primeiro contato</Label>
           <Input id="lf-first" type="date" value={form.firstContactDate}
@@ -400,6 +400,8 @@ export default function LeadsPage() {
     setEditForm({
       name:            lead.name,
       whatsapp:        lead.whatsapp,
+      email:           "",
+      birthDate:       "",
       source:          lead.source,
       notes:           lead.notes ?? "",
       planInterest:    lead.planInterest,
@@ -498,7 +500,7 @@ export default function LeadsPage() {
   // ── Render ────────────────────────────────────────────────────────────────
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
       <div>
         <h1 className="text-2xl font-semibold">Leads</h1>
         <p className="text-sm text-muted-foreground">Gerencie e acompanhe seus leads</p>
@@ -654,7 +656,7 @@ export default function LeadsPage() {
                       {lead.notes || "—"}
                     </TableCell>
                     <TableCell>
-                      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="flex items-center gap-1 transition-opacity sm:opacity-0 sm:group-hover:opacity-100">
                         <Button
                           variant="ghost" size="icon" className="h-7 w-7"
                           onClick={() => openEdit(lead)} aria-label="Editar"
@@ -680,7 +682,7 @@ export default function LeadsPage() {
 
       {/* ── Create Dialog ── */}
       <Dialog open={createOpen} onOpenChange={(o) => { setCreateOpen(o); if (!o) setCreateErrors({}); }}>
-        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+        <DialogContent className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>Novo Lead</DialogTitle>
           </DialogHeader>
@@ -700,7 +702,7 @@ export default function LeadsPage() {
 
       {/* ── Edit Dialog ── */}
       <Dialog open={!!editingLead} onOpenChange={(o) => { if (!o) { setEditingLead(null); setEditErrors({}); } }}>
-        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+        <DialogContent className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>Editar Lead</DialogTitle>
           </DialogHeader>
@@ -748,7 +750,7 @@ export default function LeadsPage() {
 
       {/* ── Bulk Edit Dialog ── */}
       <Dialog open={bulkEditOpen} onOpenChange={setBulkEditOpen}>
-        <DialogContent className="max-w-sm">
+        <DialogContent className="sm:max-w-sm">
           <DialogHeader>
             <DialogTitle>
               Editar {selected.size} {selected.size === 1 ? "lead" : "leads"}

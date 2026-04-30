@@ -139,10 +139,6 @@ function formatDate(dateStr: string | null | undefined) {
   return new Date(dateStr).toLocaleDateString("pt-BR");
 }
 
-function stripEmpty(obj: Record<string, unknown>): Record<string, unknown> {
-  return Object.fromEntries(Object.entries(obj).filter(([, v]) => v !== ""));
-}
-
 function nullEmpty(obj: Record<string, unknown>): Record<string, unknown> {
   return Object.fromEntries(Object.entries(obj).map(([k, v]) => [k, v === "" ? null : v]));
 }
@@ -243,7 +239,7 @@ function FollowUpContextFields({
 }) {
   return (
     <>
-      <div className={cn("grid gap-4", showStatus ? "grid-cols-2" : "")}>
+      <div className={cn("grid gap-4", showStatus ? "grid-cols-1 sm:grid-cols-2" : "")}>
         <div className="space-y-1">
           <Label>Tipo <span className="text-destructive">*</span></Label>
           <Select value={type} onValueChange={(v) => onChange({ type: v as FollowUpType })}>
@@ -290,7 +286,7 @@ function FollowUpContextFields({
         )}
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="space-y-1">
           <Label>Próximo contato <span className="text-destructive">*</span></Label>
           <Input type="date" value={nextActionDate} onChange={(e) => onChange({ nextActionDate: e.target.value })}
@@ -569,7 +565,7 @@ export default function FollowUpPage() {
   const FilterIcon = filterDisplay.icon;
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
       <div>
         <h1 className="text-2xl font-semibold">Follow-up</h1>
         <p className="text-sm text-muted-foreground">Gerencie leads frios e inativos em processo de reativação</p>
@@ -727,7 +723,7 @@ export default function FollowUpPage() {
                       {record.observations || "—"}
                     </TableCell>
                     <TableCell>
-                      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="flex items-center gap-1 transition-opacity sm:opacity-0 sm:group-hover:opacity-100">
                         <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => openEdit(record)} aria-label="Editar">
                           <Pencil className="h-3.5 w-3.5" />
                         </Button>
@@ -770,7 +766,7 @@ export default function FollowUpPage() {
 
       {/* ── Create Dialog ── */}
       <Dialog open={createOpen} onOpenChange={(o) => { setCreateOpen(o); if (!o) { setScratchErrors({}); setLinkErrors({}); } }}>
-        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+        <DialogContent className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>Novo Follow-up</DialogTitle>
           </DialogHeader>
@@ -787,7 +783,7 @@ export default function FollowUpPage() {
                 {scratchErrors._general && (
                   <p className="text-sm text-destructive bg-destructive/10 rounded p-2">{scratchErrors._general}</p>
                 )}
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-1">
                     <Label>Nome <span className="text-destructive">*</span></Label>
                     <Input
@@ -958,7 +954,7 @@ export default function FollowUpPage() {
 
       {/* ── Edit Dialog ── */}
       <Dialog open={!!editingRecord} onOpenChange={(o) => { if (!o) { setEditingRecord(null); setEditErrors({}); } }}>
-        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+        <DialogContent className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>Editar Follow-up — {editingRecord?.name}</DialogTitle>
           </DialogHeader>
@@ -1014,7 +1010,7 @@ export default function FollowUpPage() {
 
       {/* ── Bulk Status Edit Dialog ── */}
       <Dialog open={bulkEditOpen} onOpenChange={setBulkEditOpen}>
-        <DialogContent className="max-w-sm">
+        <DialogContent className="sm:max-w-sm">
           <DialogHeader>
             <DialogTitle>Editar {selected.size} {selected.size === 1 ? "follow-up" : "follow-ups"}</DialogTitle>
           </DialogHeader>
