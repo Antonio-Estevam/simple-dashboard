@@ -28,45 +28,6 @@ export function Sales(){
                         <span className="text-[12px] sm:text-sm text-gray-400">antonio.test@test.com</span>
                     </div>
                 </article>
-
-                <article className="flex items-center gap-2 border-b py-2">
-                    <Avatar className="w-8 h-8" >
-                        <AvatarImage src="https://github.com/Antonio-Estevam.png"/>
-                        <AvatarFallback>DV</AvatarFallback>
-                    </Avatar>
-                    <div>
-                        <p className="text-sm sm:text-base font-semibol">
-                            Antonio Estevam Filho
-                        </p>
-                        <span className="text-[12px] sm:text-sm text-gray-400">antonio.test@test.com</span>
-                    </div>
-                </article>
-
-                <article className="flex items-center gap-2 border-b py-2">
-                    <Avatar className="w-8 h-8" >
-                        <AvatarImage src="https://github.com/Antonio-Estevam.png"/>
-                        <AvatarFallback>DV</AvatarFallback>
-                    </Avatar>
-                    <div>
-                        <p className="text-sm sm:text-base font-semibol">
-                            Antonio Estevam Filho
-                        </p>
-                        <span className="text-[12px] sm:text-sm text-gray-400">antonio.test@test.com</span>
-                    </div>
-                </article>
-                
-                <article className="flex items-center gap-2 border-b py-2">
-                    <Avatar className="w-8 h-8" >
-                        <AvatarImage src="https://github.com/Antonio-Estevam.png"/>
-                        <AvatarFallback>DV</AvatarFallback>
-                    </Avatar>
-                    <div>
-                        <p className="text-sm sm:text-base font-semibol">
-                            Antonio Estevam Filho
-                        </p>
-                        <span className="text-[12px] sm:text-sm text-gray-400">antonio.test@test.com</span>
-                    </div>
-                </article>
             </CardContent>
         </Card>
     )

@@ -1,191 +1,236 @@
+"use client";
 
-import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet"
-import { Button } from "../ui/button"
-import Link from "next/link"
-import { Home, LogOut, Package, Package2, PanelBottom, Settings2, ShoppingBag, Users } from "lucide-react"
-import { TooltipProvider, Tooltip, TooltipContent,TooltipTrigger } from "@/components/ui/tooltip"
-export function Sidebar(){
-    return (
-        <div className="flex w-full flex-col bg-muted/40">
-            <aside 
-                className="fixed inset-y-0 left-0 z-10 hidden w-14 border-r bg-background sm:flex flex-col"
-            >
-                <nav className="flex flex-col items-center gap-4 px-2 py-5">
-                    <TooltipProvider>
-                        <Link
-                            href="#"
-                            className="flex h-9 w-9 shrink-0 items-center justify-center bg-primary text-primary-foreground rounded-full"
-                        >
-                            <Package className="h-4 w-4"/>
-                            <span className="sr-only">Deshbord Avatar</span>
-                        </Link>
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useState, useEffect, useRef } from "react";
+import { motion } from "framer-motion";
+import {
+  BicepsFlexed,
+  BriefcaseBusiness,
+  ChevronDown,
+  Home,
+  Package2,
+  Settings2,
+  ShoppingBag,
+  Sparkles,
+  Users,
+} from "lucide-react";
+import {
+  Collapsible,
+  CollapsibleContent,
+} from "@/components/ui/collapsible";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
+  SidebarRail,
+  useSidebar,
+} from "@/components/ui/sidebar";
+import { LogoutButton } from "./logout-button";
+import { ThemeToggle } from "./theme-toggle";
 
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <Link
-                                    href="#"
-                                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground"
-                                >
-                                 <Home className="h-5 w-5"/>
-                                 <span className="sr-only">Início</span>
-                                </Link>
-                            </TooltipTrigger>
-                            <TooltipContent side="right">Início</TooltipContent>
-                        </Tooltip>
+export function AppSidebar() {
+  const pathname = usePathname();
+  const { open, setOpen } = useSidebar();
 
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <Link
-                                    href="#"
-                                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground"
-                                >
-                                 <ShoppingBag className="h-5 w-5"/>
-                                 <span className="sr-only">Pedidos</span>
-                                </Link>
-                            </TooltipTrigger>
-                            <TooltipContent side="right">Pedidos</TooltipContent>
-                        </Tooltip>
+  const isCrmActive = pathname.startsWith("/dashboard/crm");
+  const isCoachingActive = pathname.startsWith("/dashboard/coaching");
 
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <Link
-                                    href="#"
-                                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground"
-                                >
-                                 <Package2 className="h-5 w-5"/>
-                                 <span className="sr-only">Produtos</span>
-                                </Link>
-                            </TooltipTrigger>
-                            <TooltipContent side="right">Produtos</TooltipContent>
-                        </Tooltip>
+  const [crmOpen, setCrmOpen] = useState(isCrmActive);  
+  const [coachingOpen, setCoachingOpen] = useState(isCoachingActive);
 
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <Link
-                                    href="#"
-                                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground"
-                                >
-                                 <Users className="h-5 w-5"/>
-                                 <span className="sr-only">Clientes</span>
-                                </Link>
-                            </TooltipTrigger>
-                            <TooltipContent side="right">Clientes</TooltipContent>
-                        </Tooltip>
+  const containerRef = useRef<HTMLDivElement>(null);
+  const homeRef = useRef<HTMLButtonElement>(null);
+  const crmRef = useRef<HTMLButtonElement>(null);
+  const coachingRef = useRef<HTMLButtonElement>(null);
+  const [pill, setPill] = useState<{ y: number; h: number } | null>(null);
 
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <Link
-                                    href="#"
-                                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground"
-                                >
-                                 <Settings2 className="h-5 w-5"/>
-                                 <span className="sr-only">Configurações</span>
-                                </Link>
-                            </TooltipTrigger>
-                            <TooltipContent side="right">Configurações</TooltipContent>
-                        </Tooltip>
-                    </TooltipProvider>
-                </nav>
-                <nav className="mt-auto flex flex-col items-center gap-4 px-2 py-5">
-                    <TooltipProvider>
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <Link
-                                    href="#"
-                                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground"
-                                >
-                                 <LogOut className="h-5 w-5 text-red-500"/>
-                                 <span className="sr-only">Sair</span>
-                                </Link>
-                            </TooltipTrigger>
-                            <TooltipContent side="right">Sair</TooltipContent>
-                        </Tooltip>
-                    </TooltipProvider>
-                </nav>
-            </aside>
-            <div className="sm:hidden flex w-full flex-col sm:gap-4 sm:py-4 sm:pl-14">
-                <header 
-                    className="sticky top-0 z-30 flex h-14 items-center px-4 border-b bg-background gap-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6"
-                >
-                    <Sheet>
-                        <SheetTrigger asChild>
-                            <Button size="icon" variant="outline" className="sm:hidden">
-                                <PanelBottom className="w-5 h-5" />
-                                <span className="sr-only">Abrir / fechar menu</span>
-                            </Button>
-                        </SheetTrigger>
+  useEffect(() => {
+    if (isCrmActive) setCrmOpen(true);
+  }, [isCrmActive]);
+  
+  useEffect(() => {
+    if (isCoachingActive) setCoachingOpen(true);
+  }, [isCoachingActive]);
 
-                        <SheetContent side="left" className="sm:max-w-x">
-                            <nav className="grid gap-6 text-lg font-medium">
-                                <Link 
-                                    href="#"
-                                    className="flex h-10 w-10 bg-primary rounded-full text-lg items-center justify-center text-primary-foreground md:text-base gap-2"
-                                    prefetch={false}
-                                >
-                                    <Package className="h-5 w-5 transition-all"/>
-                                    <span className="sr-only">Logo</span>
-                                </Link>
+  useEffect(() => {
+    const container = containerRef.current;
+    const activeEl =
+      pathname === "/dashboard" ? homeRef.current :
+      isCrmActive ? crmRef.current :
+      null;
 
-                                <Link 
-                                    href="#"
-                                    className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-                                    prefetch={false}
-                                >
-                                    <Home className="h-5 w-5 transition-all"/>
-                                    Início
-                                </Link>
-                                
-                                <Link 
-                                    href="#"
-                                    className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-                                    prefetch={false}
-                                >
-                                    <ShoppingBag className="h-5 w-5 transition-all"/>
-                                    Pedidos
-                                </Link>
-                                
-                                <Link 
-                                    href="#"
-                                    className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-                                    prefetch={false}
-                                >
-                                    <Package2 className="h-5 w-5 transition-all"/>
-                                    Produtos
-                                </Link>
-                                
-                                <Link 
-                                    href="#"
-                                    className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-                                    prefetch={false}
-                                >
-                                    <Users className="h-5 w-5 transition-all"/>
-                                    Clientes
-                                </Link>
-                                
-                                <Link 
-                                    href="#"
-                                    className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-                                    prefetch={false}
-                                >
-                                    <Settings2 className="h-5 w-5 transition-all"/>
-                                    Configurações
-                                </Link>
-                            </nav>
+    if (!container || !activeEl) { setPill(null); return; }
 
-                            {/*<nav className="mt-auto flex flex-col items-center gap-4 px-2 py-5">
-                                            <Link
-                                                href="#"
-                                                className="flex items-center gap-4 px-2.5 text-red-400 hover:text-red-500"
-                                            >
-                                            <LogOut className="h-5 w-5 transition-all"/>
-                                                Sair
-                                            </Link>
-                            </nav>*/}
-                        </SheetContent>
-                    </Sheet>
-                    <h2>Menu</h2>
-                </header>
+    const measure = () => {
+      const c = container.getBoundingClientRect();
+      const b = activeEl.getBoundingClientRect();
+      setPill({ y: b.top - c.top, h: b.height });
+    };
+
+    measure();
+    // re-measure after sidebar expand/collapse transition
+    const t = setTimeout(measure, 320);
+    return () => clearTimeout(t);
+  }, [pathname, isCrmActive, open]);
+
+  function handleCrmClick() {
+    if (!open) {
+      setOpen(true);
+      setCrmOpen(true);
+    } else {
+      setCrmOpen((p) => !p);
+    }
+  }
+
+  function handleCoachingClick() {
+    if (!open) {
+      setOpen(true);
+      setCoachingOpen(true);
+    } else {
+      setCoachingOpen((p) => !p);
+    }
+  }
+
+  return (
+    <Sidebar collapsible="icon">
+      <SidebarContent className="bg-secondary">
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <div ref={containerRef} className="relative">
+              {pill && (
+                <motion.div
+                  className="absolute inset-x-1 rounded-md bg-sidebar-accent pointer-events-none"
+                  initial={false}
+                  animate={{ y: pill.y, height: pill.h }}
+                  transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                />
+              )}
+
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    ref={homeRef}
+                    asChild
+                    isActive={pathname === "/dashboard"}
+                    tooltip="Início"
+                    className="relative z-10 data-[active=true]:bg-transparent data-[active=true]:text-sidebar-accent-foreground data-[active=true]:font-medium hover:bg-transparent"
+                  >
+                    <Link href="/dashboard">
+                      <Home />
+                      <span>Home</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+
+                
+                <Collapsible open={coachingOpen} className="group/collapsible">
+                  <SidebarMenuItem>
+                    <SidebarMenuButton
+                      ref={coachingRef}
+                      isActive={isCoachingActive}
+                      tooltip="Coaching"
+                      className="relative z-10 data-[active=true]:bg-transparent data-[active=true]:text-sidebar-accent-foreground data-[active=true]:font-medium hover:bg-transparent"
+                      onClick={handleCoachingClick}
+                    >
+                      <BicepsFlexed />
+                      <span>Coaching</span>
+                      <ChevronDown className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-180" />
+                    </SidebarMenuButton>
+                    <CollapsibleContent>
+                      <SidebarMenuSub>
+                        <SidebarMenuSubItem>
+                          <SidebarMenuSubButton asChild isActive={pathname === "/dashboard/coaching"}>
+                            <Link href="/dashboard/crm">Resumo</Link>
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                      </SidebarMenuSub>
+                    </CollapsibleContent>
+                  </SidebarMenuItem>
+                </Collapsible>
+
+                <Collapsible open={crmOpen} className="group/collapsible">
+                  <SidebarMenuItem>
+                    <SidebarMenuButton
+                      ref={crmRef}
+                      isActive={isCrmActive}
+                      tooltip="CRM"
+                      className="relative z-10 data-[active=true]:bg-transparent data-[active=true]:text-sidebar-accent-foreground data-[active=true]:font-medium hover:bg-transparent"
+                      onClick={handleCrmClick}
+                    >
+                      <BriefcaseBusiness />
+                      <span>CRM</span>
+                      <ChevronDown className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-180" />
+                    </SidebarMenuButton>
+                    <CollapsibleContent>
+                      <SidebarMenuSub>
+                        <SidebarMenuSubItem>
+                          <SidebarMenuSubButton asChild isActive={pathname === "/dashboard/crm"}>
+                            <Link href="/dashboard/crm">Resumo</Link>
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                        <SidebarMenuSubItem>
+                          <SidebarMenuSubButton asChild isActive={pathname === "/dashboard/crm/leads"}>
+                            <Link href="/dashboard/crm/leads">Leads</Link>
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                        <SidebarMenuSubItem>
+                          <SidebarMenuSubButton asChild isActive={pathname === "/dashboard/crm/follow-up"}>
+                            <Link href="/dashboard/crm/follow-up">Follow-up</Link>
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                        <SidebarMenuSubItem>
+                          <SidebarMenuSubButton asChild isActive={pathname === "/dashboard/crm/clients"}>
+                            <Link href="/dashboard/crm/clients">Clientes Ativos</Link>
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                        <SidebarMenuSubItem>
+                          <SidebarMenuSubButton asChild isActive={pathname === "/dashboard/crm/inactive-clients"}>
+                            <Link href="/dashboard/crm/inactive-clients">Clientes Inativos</Link>
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                        <SidebarMenuSubItem>
+                          <SidebarMenuSubButton asChild isActive={pathname === "/dashboard/crm/financial"}>
+                            <Link href="/dashboard/crm/financial">Financeiro</Link>
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                      </SidebarMenuSub>
+                    </CollapsibleContent>
+                  </SidebarMenuItem>
+                </Collapsible>
+                
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild tooltip="Configurações" className="relative z-10 hover:bg-sidebar-accent">
+                    <Link href="#"><Settings2 /><span>Configurações</span></Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+
+              </SidebarMenu>
             </div>
-        </div>
-    )
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
+
+      <SidebarFooter className="bg-secondary">
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <ThemeToggle />
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <LogoutButton />
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
+
+      <SidebarRail />
+    </Sidebar>
+  );
 }
