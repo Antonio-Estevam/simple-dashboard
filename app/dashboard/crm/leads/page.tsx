@@ -480,7 +480,7 @@ export default function LeadsPage() {
   }
 
   async function handleBulkEdit() {
-    await Promise.all([...selected].map((id) =>
+    await Promise.all(Array.from(selected).map((id) =>
       fetch(`/api/leads/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },

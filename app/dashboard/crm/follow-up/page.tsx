@@ -514,7 +514,7 @@ export default function FollowUpPage() {
   }
 
   async function handleBulkEdit() {
-    await Promise.all([...selected].map((id) =>
+    await Promise.all(Array.from(selected).map((id) =>
       fetch(`/api/follow-up/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
