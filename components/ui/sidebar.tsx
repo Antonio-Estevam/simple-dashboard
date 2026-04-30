@@ -82,7 +82,7 @@ const SidebarProvider = React.forwardRef<
     const open = openProp ?? _open
     const setOpen = React.useCallback(
       (value: boolean | ((value: boolean) => boolean)) => {
-        const openState = typeof value === "function" ? value(open) : value
+        const openState = typeof value === "function" ? value(open ?? false) : value
         if (setOpenProp) {
           setOpenProp(openState)
         } else {
@@ -125,7 +125,7 @@ const SidebarProvider = React.forwardRef<
     const contextValue = React.useMemo<SidebarContextProps>(
       () => ({
         state,
-        open,
+        open: open ?? false,
         setOpen,
         isMobile,
         openMobile,

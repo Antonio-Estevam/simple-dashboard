@@ -629,7 +629,7 @@ export default function FollowUpPage() {
                 <Pencil className="h-3.5 w-3.5" />
                 Editar {selected.size}
               </Button>
-              <Button variant="destructive" size="sm" onClick={() => confirmDelete([...selected])} className="gap-1.5">
+              <Button variant="destructive" size="sm" onClick={() => confirmDelete(Array.from(selected))}className="gap-1.5">
                 <Trash2 className="h-3.5 w-3.5" />
                 Excluir {selected.size}
               </Button>
